@@ -7,7 +7,7 @@ export default function Home() {
       <h2 className='text-3xl mb-4'>DRRM-H INVENTORY-EQUIPMENT MONITORING AND MANAGEMENT SYSTEM</h2>
 
     
-       <Link href="/inventory/home/dashboard" className="">View Dashboard</Link>
+       <Link href="/inventory/home/overview" className="">View Dashboard</Link>
     </div>
 
 
