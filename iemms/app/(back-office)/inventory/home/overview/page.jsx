@@ -7,7 +7,7 @@ import styles from '../../../../../styles/Dashboard.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const timeOptions = [3, 7, 14, 30, 90, 180, 365, 730, 1095, 1460, 1825]; // Day options
+const timeOptions = [3, 7, 14, 21, 30, 45, 60, 90, 180, 365, 730, 1095, 1460, 1825]; // Day options
 
 const Dashboard = () => {
   // State to manage the visibility of details
