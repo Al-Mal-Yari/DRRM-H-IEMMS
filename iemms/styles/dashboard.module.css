@@ -1,10 +1,15 @@
 .container {
     padding: 20px;
+    height: auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .dashboardHeader {
     text-align: center;
     margin-bottom: 30px;
+    
 }
 
 /* Cards Layout */
@@ -59,17 +64,35 @@
     margin-bottom: 50px;
 }
 
-.chartContainer {
+.chartContainerScrollable {
     display: flex;
     justify-content: center; /* Center the chart */
+    white-space: nowrap;
+    height: 350px;
+    min-width: 1200px;
+}
+
+.scrollableContainer {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent the chart from wrapping to a new line */
+    padding-bottom: 10px;
+    display: block; /* Optional: to prevent scrollbar from overlapping content */
+    width: 100%;
+    height: 400px;
 }
 
 .chartContainerLarge {
+    min-width: 600px;
     width: 100%; /* Full width for each line chart */
-    height: 400px; /* Adjust height as needed */
+    height: 350px; /* Adjust height as needed */
 }
 
 .chartContainerSmall {
     width: 25%; /* Adjust the width for the pie chart */
     height: 250px; /* Adjust height as needed */
 }
+
+.canvas {
+    min-width: 800px; /* Set the minimum width to ensure it scrolls when necessary */
+    max-width: 100%; /* Prevents it from expanding beyond the container */
+  }

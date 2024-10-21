@@ -7,12 +7,18 @@ import styles from '../../../../../styles/Dashboard.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+const timeOptions = [3, 7, 14, 30, 90, 180, 365, 730, 1095, 1460, 1825]; // Day options
+
 const Dashboard = () => {
   // State to manage the visibility of details
   const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedDays, setSelectedDays] = useState(14); // Default to 14 days
 
   // Generate 14 days of labels (from 2024-10-01 to 2024-10-14)
-  const labels = Array.from({ length: 14 }, (_, i) => `2024-10-${String(i + 1).padStart(2, '0')}`);
+  const labels = Array.from({ length: selectedDays }, (_, i) => {
+    const date = new Date(2024, 9, i + 1); // Starting from 2024-10-01
+    return date.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+  });
 
   // Equipment Borrowed Data for 14 Days
   const borrowedData = {
@@ -20,28 +26,28 @@ const Dashboard = () => {
     datasets: [
       {
         label: 'Electronics Borrowed',
-        data: [5, 12, 10, 15, 6, 18, 14, 7, 16, 19, 8, 20, 22, 11],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 20 + 1)),
         borderColor: '#4CAF50',
         backgroundColor: 'rgba(76, 175, 80, 0.2)',
         fill: true,
       },
       {
         label: 'Medical Supplies Borrowed',
-        data: [15, 18, 20, 22, 17, 21, 19, 23, 26, 20, 24, 15, 12, 30],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 30 + 1)),
         borderColor: '#FF9800',
         backgroundColor: 'rgba(255, 152, 0, 0.2)',
         fill: true,
       },
       {
         label: 'Rescue Equipment Borrowed',
-        data: [2, 3, 5, 4, 3, 6, 5, 8, 7, 4, 5, 6, 3, 9],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 10 + 1)),
         borderColor: '#2196F3',
         backgroundColor: 'rgba(33, 150, 243, 0.2)',
         fill: true,
       },
       {
         label: 'Vehicles Borrowed',
-        data: [1, 1, 2, 3, 2, 4, 3, 2, 3, 4, 5, 4, 2, 3],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 5 + 1)),
         borderColor: '#9C27B0',
         backgroundColor: 'rgba(156, 39, 176, 0.2)',
         fill: true,
@@ -49,34 +55,34 @@ const Dashboard = () => {
     ],
   };
 
-  // Equipment Returned Data for 14 Days
+  // Equipment Returned Data
   const returnedData = {
     labels: labels,
     datasets: [
       {
         label: 'Electronics Returned',
-        data: [7, 5, 9, 10, 8, 6, 13, 12, 14, 7, 10, 8, 5, 11],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 20 + 1)),
         borderColor: '#66BB6A',
         backgroundColor: 'rgba(102, 187, 106, 0.2)',
         fill: true,
       },
       {
         label: 'Medical Supplies Returned',
-        data: [10, 14, 11, 13, 10, 15, 16, 18, 14, 12, 8, 6, 9, 11],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 25 + 1)),
         borderColor: '#FFB74D',
         backgroundColor: 'rgba(255, 183, 77, 0.2)',
         fill: true,
       },
       {
         label: 'Rescue Equipment Returned',
-        data: [1, 2, 3, 4, 2, 3, 2, 1, 3, 4, 5, 2, 3, 4],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 10 + 1)),
         borderColor: '#42A5F5',
         backgroundColor: 'rgba(66, 165, 245, 0.2)',
         fill: true,
       },
       {
         label: 'Vehicles Returned',
-        data: [0, 1, 2, 1, 1, 3, 2, 2, 3, 1, 1, 0, 2, 3],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 5 + 1)),
         borderColor: '#BA68C8',
         backgroundColor: 'rgba(186, 104, 200, 0.2)',
         fill: true,
@@ -84,13 +90,12 @@ const Dashboard = () => {
     ],
   };
 
-  // Triage Training Data: Number of Attendees per Day
   const trainingData = {
     labels: labels,
     datasets: [
       {
         label: 'Number of Attendees',
-        data: [5, 8, 10, 12, 6, 9, 10, 7, 15, 8, 12, 11, 10, 14],
+        data: Array.from({ length: selectedDays }, () => Math.floor(Math.random() * 15 + 1)),
         borderColor: '#FF9800',
         backgroundColor: 'rgba(255, 152, 0, 0.2)',
         fill: true,
@@ -101,6 +106,14 @@ const Dashboard = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'left', // Position the legend on the left
+        labels: {
+          usePointStyle: true, // Make the legend use point styles like circles
+        },
+      },
+    },
     scales: {
       y: {
         min: 0,
@@ -110,6 +123,15 @@ const Dashboard = () => {
         },
       },
     },
+  };
+  
+
+  const handleCardClick = (cardType) => {
+    setSelectedCard(selectedCard === cardType ? null : cardType);
+  };
+
+  const handleDayChange = (e) => {
+    setSelectedDays(Number(e.target.value)); // Update selected days
   };
 
   // Sample data for top borrowers, returners, and attendees
@@ -130,10 +152,6 @@ const Dashboard = () => {
     { name: 'Emily Davis', attendees: 10 },
     { name: 'Chris Wilson', attendees: 9 },
   ];
-
-  const handleCardClick = (cardType) => {
-    setSelectedCard(selectedCard === cardType ? null : cardType);
-  };
 
   return (
     <div className={styles.container}>
@@ -233,31 +251,55 @@ const Dashboard = () => {
     {selectedCard === 'recentAttendees' && <p>Further details about recent attendees...</p>}
   </div>
 </div>
+      {/* Dropdown for selecting time range */}
+      <div className={styles.selectContainer}>
+        <label htmlFor="dayRange">Select Time Range: </label>
+        <select id="dayRange" onChange={handleDayChange} value={selectedDays}>
+          {timeOptions.map((days, index) => (
+            <option key={index} value={days}>
+              {days} days
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {/* Inventory Equipment Borrowed Line Chart */}
+      {/* Equipment Borrowed Chart */}
       <div className={styles.chartSection}>
-        <h3>Equipment Borrowed (14 Days)</h3>
-        <div className={styles.chartContainerLarge}>
+        <h3>Equipment Borrowed ({selectedDays} Days)</h3>
+        <div className={styles.scrollableContainer}>
+          <div className={styles.chartContainerScrollable}
+          style={{ minWidth: `${Math.max(selectedDays, 90) * 5}px` }} // Dynamic width
+          >
           <Line data={borrowedData} options={options} />
         </div>
       </div>
+      </div>
 
-      {/* Inventory Equipment Returned Line Chart */}
+      {/* Equipment Returned Chart */}
       <div className={styles.chartSection}>
-        <h3>Equipment Returned (14 Days)</h3>
-        <div className={styles.chartContainerLarge}>
+        <h3>Equipment Returned ({selectedDays} Days)</h3>
+        <div className={styles.scrollableContainer}>
+          <div className={styles.chartContainerScrollable}
+          style={{ minWidth: `${Math.max(selectedDays, 90) * 5}px` }} // Dynamic width
+          >
           <Line data={returnedData} options={options} />
         </div>
       </div>
+      </div>
 
-      {/* Triage Training Status Line Chart */}
+      {/* Triage Training Chart */}
       <div className={styles.chartSection}>
-        <h3>Triage Training Progress (Number of Attendees per Day)</h3>
-        <div className={styles.chartContainerLarge}>
+        <h3>Triage Training Progress ({selectedDays} Days)</h3>
+        <div className={styles.scrollableContainer}>
+          <div className={styles.chartContainerScrollable}
+          style={{ minWidth: `${Math.max(selectedDays, 90) * 5}px` }} // Dynamic width
+          >
           <Line data={trainingData} options={options} />
         </div>
       </div>
+
     </div>
+  </div>
   );
 };
 
