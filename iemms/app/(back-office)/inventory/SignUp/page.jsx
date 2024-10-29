@@ -1,4 +1,5 @@
 import React from 'react'
+import { app } from '../firebaseConfig';
 
 export default function SignUp() {
   return (
