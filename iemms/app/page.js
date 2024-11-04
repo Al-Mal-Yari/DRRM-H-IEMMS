@@ -21,6 +21,7 @@ const roboto = Roboto({
 export default function Home() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showRegisterModal, setShowRegisterModal] = useState(false); // New state for the register modal
   const router = useRouter(); // Initialize useRouter
 
   const handleLogin = (e) => {
@@ -29,7 +30,14 @@ export default function Home() {
     console.log("Logging in with:", username, password);
 
     // After successful login, redirect to the dashboard
-    router.push("/main/home/overview"); // Adjust the path to your dashboard
+    router.push("/inventory/home/overview"); // Adjust the path to your dashboard
+  };
+  const handleOpenRegisterModal = () => {
+    setShowRegisterModal(true); // Open the modal
+  };
+
+  const handleCloseRegisterModal = () => {
+    setShowRegisterModal(false); // Close the modal
   };
 
   return (
@@ -65,7 +73,7 @@ export default function Home() {
     </div>
 
       {/* Right Side - Login Section */}
-      <div className="flex items-center justify-center w-1/4 bg-gradient-to-b from-[#6D0203] shadow-md p-8 to-[#3D0000]">
+      <div className="flex items-center justify-center w-1/4 bg-gradient-to-b from-[#5a2122] shadow-md p-8 to-[#3D0000]">
       <div className="w-full flex flex-col items-center">
         {/* Logo Section */}
         <div className="mb-6"> {/* Adjust the margin to control spacing */}
@@ -145,12 +153,12 @@ export default function Home() {
               </button>
             </div>
             <div className="flex flex-col items-center justify-center w-full mt-4 space-y-2">
-              <Link 
-                href="/register" 
+              <button 
+                onClick={handleOpenRegisterModal} 
                 className="inline-block font-bold text-sm text-[#D2D2D2] hover:text-[#ff4646]"
               >
                 Register
-              </Link>
+              </button>
               <Link
                 href="https://facebook.com/UPSimulationCenter" // Make sure to include "https://" to open the link correctly
                 target="_blank" // Opens the Facebook page in a new tab
@@ -162,6 +170,59 @@ export default function Home() {
           </form>
         </div>
       </div>
+      {/* Register Modal */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-2xl font-bold mb-4">Create a New Account</h3>
+            {/* Registration form */}
+            <form>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-bold mb-2" htmlFor="newUsername">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  id="newUsername"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-bold mb-2" htmlFor="newPassword">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-gray-700 font-bold mb-2" htmlFor="confirmPassword">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              <button type="submit" className="bg-[#841919] hover:bg-[#d16767] text-white font-bold py-2 px-4 rounded w-full">
+                Register
+              </button>
+            </form>
+            <button 
+              onClick={handleCloseRegisterModal} 
+              className="mt-4 inline-block font-bold text-sm text-[#841919] hover:text-[#d16767]"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
