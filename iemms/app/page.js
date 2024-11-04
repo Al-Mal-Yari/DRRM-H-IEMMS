@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 
+import { Roboto } from '@next/font/google';
 import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Facebook and Google icons
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
-import lettuceImage from './bgcover.jpg';
+import drrmBg from './bgcover.jpg';
 import Logo from './logo.png';
+import upmlogo from './upmlogo.png';
+import drrmlogo from './drrmlogo.png';
+import dostlogo from './dostlogo.png';
 
+const roboto = Roboto({
+    subsets: ['latin'],
+    weight: ['400', '700'],
+  })
 export default function Home() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,15 +35,34 @@ export default function Home() {
   return (
     <div className='flex min-h-screen'>
       {/* Left Side - Image Section */}
-      <div className="flex-1 relative">
-        <Image
-          src={lettuceImage}
-          alt="Lettuce Vertical Farming IOT"
-          fill // Use fill instead of layout
-          style={{ objectFit: 'cover' }} // Set the image to cover the container
-        />
-        <div className="absolute inset-0 bg-black opacity-30"></div> {/* Overlay for a modern look */}
-      </div>
+        <div className="flex-1 relative">
+          <Image
+            src={drrmBg}
+            alt="drrmBg"
+            fill // Use fill instead of layout
+            style={{ objectFit: 'cover' }} // Set the image to cover the container
+          />
+          <div className="absolute inset-0 bg-black opacity-30"></div> {/* Overlay for a modern look */}
+
+            <div className="absolute bottom-5 right-4 flex flex-col space-y-2 z-10"> {/* Parent container in the lower-right corner */}
+              {/* DOST Logo */}
+              <div className="relative"> {/* Adjust position here if needed */}
+                <Image src={dostlogo} alt="DOST Logo" width={90} height={90} /> {/* Slightly larger DOST logo */}
+              </div>
+
+              {/* UPM Logo */}
+              <div className="relative mt-2, ml-2"> {/* Adjust `mt-1` to control spacing */}
+                <Image src={upmlogo} alt="UPM Logo" width={70} height={70} />
+              </div>
+
+              {/* DRRM Logo */}
+              <div className="relative mt-2, ml-1.5"> {/* Adjust `mt-1` to control spacing */}
+                <Image src={drrmlogo} alt="DRRM Logo" width={72} height={72} />
+              </div>
+            </div>
+
+
+    </div>
 
       {/* Right Side - Login Section */}
       <div className="flex items-center justify-center w-1/4 bg-gradient-to-b from-[#6D0203] shadow-md p-8 to-[#3D0000]">
@@ -52,8 +79,8 @@ export default function Home() {
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">
-          DRRM-H INVENTORY-EQUIPMENT MONITORING AND MANAGEMENT SYSTEM
+        <h2 className="text-3xl font-bold mb-6 text-center text-white" style={{fontSize: '1.25rem'}}>
+          UPM DRRM-H INVENTORY-EQUIPMENT & MONITORING MANAGEMENT SYSTEM
         </h2>
 
 
@@ -95,7 +122,7 @@ export default function Home() {
               </button>
               <Link 
                 href="/forgot-password" 
-                className='inline-block align-baseline font-bold text-sm text-[#D2D2D2] hover:text-[#C73E3E]'
+                className='inline-block align-baseline font-bold text-sm text-[#D2D2D2] hover:text-[#ff4646]'
               >
                 Forgot Password?
               </Link>
@@ -116,6 +143,21 @@ export default function Home() {
                 <FontAwesomeIcon icon={faGoogle} size="lg" />
                 <span className='ml-2'>Login with Gmail</span>
               </button>
+            </div>
+            <div className="flex flex-col items-center justify-center w-full mt-4 space-y-2">
+              <Link 
+                href="/register" 
+                className="inline-block font-bold text-sm text-[#D2D2D2] hover:text-[#ff4646]"
+              >
+                Register
+              </Link>
+              <Link
+                href="https://facebook.com/UPSimulationCenter" // Make sure to include "https://" to open the link correctly
+                target="_blank" // Opens the Facebook page in a new tab
+                className="inline-block font-bold text-sm text-[#D2D2D2] hover:text-[#ff4646]"
+              >
+                UPM DRRM-H Facebook Page
+              </Link>
             </div>
           </form>
         </div>
