@@ -87,15 +87,15 @@ export default function Home() {
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold mb-6 text-center text-white" style={{fontSize: '1.25rem'}}>
-          UPM DRRM-H INVENTORY-EQUIPMENT & MONITORING MANAGEMENT SYSTEM
+        <h2 className="text-3xl font-bold mb-6 text-center text-white" style={{fontSize: '1rem'}}>
+          UPM DRRM-H INVENTORY & EQUIPMENT MONITORING MANAGEMENT SYSTEM
         </h2>
 
 
           <form onSubmit={handleLogin} className='w-full max-w-sm'>
             <div className='mb-4'>
               <label className='block text-[#D4D4D4] text-sm font-bold mb-2' htmlFor='username'>
-                Username
+                Email
               </label>
               <input
                 type='text'
@@ -179,7 +179,7 @@ export default function Home() {
             <form>
               <div className="mb-4">
                 <label className="block text-gray-700 font-bold mb-2" htmlFor="newUsername">
-                  Username
+                  Email
                 </label>
                 <input
                   type="text"
