@@ -24,7 +24,6 @@ console.log("Firebase Config:", {
 });
 
 // Initialize Firebase
-//this one's for server-side rendering
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app)
 //const analytics = getAnalytics(app); //analytics isn't implemented yet

@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 import { initializeApp, getApps, getApp } from "firebase/app"; // Import getApps and getApp
 import { loginWithEmailAndPassword, registerWithEmailAndPassword } from "../firebase/auth";
 import { useRouter } from "next/navigation";
+import RegisterModal from "./components/registerModal";
 import { Roboto } from 'next/font/google';
 import Link from "next/link";
 import Image from "next/image";
@@ -53,17 +54,12 @@ const roboto = Roboto({
 export default function Home() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [newUsername, setNewUsername] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const handleOpenRegisterModal = () => { setShowRegisterModal(true); };
+  const handleCloseRegisterModal = () => { setShowRegisterModal(false); };  
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleOpenRegisterModal = () => { setShowRegisterModal(true); };
-  
-  const handleCloseRegisterModal = () => { setShowRegisterModal(false); };  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -75,21 +71,6 @@ export default function Home() {
       router.push("/inventory/home/overview");
     } catch (error) {
       alert("Failed to login: " + error.message);
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("Passwords do not match.");
-      return;
-    }
-    try {
-      const user = await registerWithEmailAndPassword(newUsername, newPassword);
-      console.log("Registered user:", user);
-      setShowRegisterModal(false); // Close modal on success
-    } catch (error) {
-      alert("Failed to register: " + error.message);
     }
   };
 
