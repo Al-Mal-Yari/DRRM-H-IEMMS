@@ -54,12 +54,20 @@ const roboto = Roboto({
 export default function Home() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [newUsername, setNewUsername] = useState(''); // Added state
+  const [newPassword, setNewPassword] = useState(''); // Added state
+  const [confirmPassword, setConfirmPassword] = useState(''); // Added state
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const handleOpenRegisterModal = () => { setShowRegisterModal(true); };
-  const handleCloseRegisterModal = () => { setShowRegisterModal(false); };  
+  const handleOpenRegisterModal = () => setShowRegisterModal(true);
+  const handleCloseRegisterModal = () => setShowRegisterModal(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -68,9 +76,41 @@ export default function Home() {
       console.log("Logged in user:", user);
   
       // Redirect to dashboard after login
-      router.push("/inventory/home/overview");
+      router.push("/upm-drrm-app/home/overview");
     } catch (error) {
       alert("Failed to login: " + error.message);
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+  
+    try {
+      // Example of form inputs for registration
+      const email = newUsername;
+      const pass = newPassword;
+  
+      // Ensure passwords match
+      if (newPassword !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+  
+      // Call your Firebase registration method
+      const user = await registerWithEmailAndPassword(email, pass);
+  
+      console.log("Registered user:", user);
+  
+      // Close modal and reset fields
+      handleCloseRegisterModal();
+      setNewUsername('');
+      setNewPassword('');
+      setConfirmPassword('');
+  
+      // Redirect after successful registration, e.g., to login page
+      router.push("");
+    } catch (error) {
+      alert("Registration failed: " + error.message);
     }
   };
 
@@ -148,18 +188,25 @@ export default function Home() {
             />
           </div>
 
-          <div className='mb-6'>
-            <label className='block text-[#D4D4D4] text-sm font-bold mb-2' htmlFor='password'>
-              Password
-            </label>
-            <input
-              type='password'
-              id='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-              required
-            />
+          <div className='mb-6 relative'>
+              <label className='block text-[#D4D4D4] text-sm font-bold mb-2' htmlFor='password'>
+                Password
+              </label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className='shadow appearance-none border rounded w-full py-2 px-3 pr-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                required
+              />
+              <button
+                type="button"
+                onClick={handleTogglePasswordVisibility}
+                className="absolute inset-y-0 right-3 top-1/2 transform text-xs flex items-center text-gray-600 focus:outline-none"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
           </div>
 
           <div className='flex items-center justify-between'>
