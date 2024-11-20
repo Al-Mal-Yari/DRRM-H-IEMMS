@@ -5,6 +5,16 @@ import React from "react";
 import Image from "next/image";
 
 export default function HomeNavBar() {
+    {/*Array of navigation links*/}
+    const navLinks = [
+      { title: "Overview", href: "./overview" },
+      { title: "Reports", href: "./reports" },
+      { title: "Inventory", href: "./Inventory" },
+      { title: "Announcements", href: "./announcements" },
+      { title: "About", href: "./about" },
+    ];
+
+    {/*render navLinks*/}
   return (
     <div className="bg-[white] text-black p-4 shadow-md flex-1 overflow-auto mt-3 ml-3">
       <div className="h-16 flex items-center">
@@ -28,24 +38,24 @@ export default function HomeNavBar() {
         </div>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="sticky mt-1.5 flex space-x-4">
-        <Link href="./overview" className="flex py-3 px-3 border-b border-[#761319] hover:bg-[#EACACC] rounded">
-          Overview
-        </Link>
-        <Link href="./reports" className="py-3 px-3 border-b border-[#761319] hover:bg-[#EACACC] rounded">
-          Reports
-        </Link>
-        <Link href="./Inventory" className="py-3 px-3 border-b border-[#761319] hover:bg-[#EACACC] rounded">
-          Inventory
-        </Link>
-        <Link href="./announcements" className="py-3 px-3 border-b border-[#761319] hover:bg-[#EACACC] rounded">
-          Announcements
-        </Link>
-        <Link href="./about" className="py-3 px-3 border-b border-[#761319] hover:bg-[#EACACC] rounded">
-          About
-        </Link>
-      </nav>
+        {/* Navigation Links */}
+        <nav className="sticky mt-1.5 flex space-x-4">
+          {[
+            { title: "Overview", href: "./overview" },
+            { title: "Reports", href: "./reports" },
+            { title: "Inventory", href: "./Inventory" },
+            { title: "Announcements", href: "./announcements" },
+            { title: "About", href: "./about" },
+          ].map((link, index) => (
+            <Link
+              key={`${link.title}-${index}`} // Unique key for each link
+              href={link.href}
+              className="flex py-3 px-3 border-b border-[#761319] hover:bg-[#EACACC] rounded"
+            >
+              {link.title}
+            </Link>
+          ))}
+        </nav>
     </div>
   );
 }

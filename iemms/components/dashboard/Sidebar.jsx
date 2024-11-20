@@ -12,12 +12,11 @@ export default function Sidebar() {
     return (
         <div>
              {/* Toggle button */}
-      <button
-        onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-50 bg-yellow-900 text-white p-3 rounded-md shadow-md focus:outline-none sm:hidden"
-      >
-        {isSidebarOpen ? "Close" : "Menu"}
-      </button>
+                <button
+                    onClick={toggleSidebar}
+                    className="fixed top-4 left-4 z-50 bg-yellow-900 text-white p-3 rounded-md shadow-md focus:outline-none sm:hidden">
+                    {isSidebarOpen ? "Close" : "Menu"}
+                </button>
 
             <aside id="logo-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-all -translate-x-full sm:translate-x-0 ${
           isSidebarOpen ?" aria-label="Sidebar">
