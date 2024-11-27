@@ -1,18 +1,26 @@
-import React from 'react'
-import Header from '@/components/dashboard/Header'
-import Sidebar from '@/components/dashboard/Sidebar'
+import React from "react";
+import Header from "@/components/dashboard/Header";
+import Sidebar from "@/components/dashboard/Sidebar";
+import HomeNavBar from "@/components/dashboard/HomeNavBar";
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
   return (
-    <div 
-    className="flex">
-    <div className="w-56 min-h-screen bg-red-900 text-slate-50">
-     <Sidebar></Sidebar>
+    <div className="flex min-h-screen">
+      {/* Sidebar - Fixed width on the left */}
+      <div className="w-56 bg-red-900 text-slate-50">
+        <Sidebar />
       </div>
 
-    <main className="w-full bg-slate-100 min-h-screen">
-    <Header></Header>  
-      {children}</main>
+      {/* Main Content Area - Flex column layout */}
+      <div className="flex-1 flex flex-col bg-slate-100">
+        {/* Header - Fixed at the top */}
+        <Header />
+
+        {/* HomeNavBar - Positioned below Header */}
+        <div className="bg-white shadow-md">
+          <HomeNavBar />
+        </div>
     </div>
-  )
+  </div>
+  );
 }

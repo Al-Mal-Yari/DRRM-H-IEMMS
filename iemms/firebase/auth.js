@@ -1,63 +1,71 @@
-// iemms/firebase/auth.js
 import { auth } from "./firebaseConfig";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendSignInLinkToEmail } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
-// Send a sign-in link to the user's email
-const actionCodeSettings = {
-    // URL you want to redirect back to. The domain (www.example.com) for this
-    url: 'https://www.example.com/finishSignUp?cartId=1234', // URL must be in the authorized domains list in the Firebase Console.
-    handleCodeInApp: true,
-    iOS: { bundleId: 'com.example.ios' },
-    android: { packageName: 'com.example.android', installApp: true, minimumVersion: '12' },
-    dynamicLinkDomain: 'example.page.link' };
+// Helper function to make API requests for registration or login
+const makeAuthRequest = async (url, email, password, reCAPTCHAToken) => {
+  try {
+    // Send the reCAPTCHA token to the backend for verification
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${reCAPTCHAToken}`, // Pass the token in the Authorization header
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-// Function to send the sign-in link
-export const sendSignInLink = async (email) => {
-    try {
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      window.localStorage.setItem('emailForSignIn', email); // Save the email locally
-      console.log("Sign-in link sent to email:", email);
-    } catch (error) {
-      console.error("Error sending sign-in link:", error.message);
-      throw error;
+    // Handle the response from the server
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response from server:", errorText);
+      throw new Error(errorText || 'Failed to verify reCAPTCHA');
     }
-  };  
+
+    // Return the JSON response if the request is successful
+    return await response.json();
+  } catch (error) {
+    console.error("API Request Error:", error.message);
+    throw new Error(`API Request Error: ${error.message}`);
+  }
+};
 
 // Register a new user
-export const registerWithEmailAndPassword = async (email, password) => {
+export const registerWithEmailAndPassword = async (email, password, reCAPTCHAToken) => {
   try {
+    // Verify the reCAPTCHA token by making a backend request
+    await makeAuthRequest('/api/register', email, password, reCAPTCHAToken);
+
+    // If the token is valid, proceed with Firebase registration
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     return userCredential.user;
   } catch (error) {
     console.error("Error during registration:", error.message);
-    throw error;
+    throw new Error(`Registration Error: ${error.message}`);
   }
 };
 
 // Login an existing user
-export const loginWithEmailAndPassword = async (email, password) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      return userCredential.user;
-    } catch (error) {
-      console.error("Error during login:", error.message);
-      if (error.code === "auth/user-not-found") {
-        throw new Error("User not found");
-      } else if (error.code === "auth/wrong-password") {
-        throw new Error("Incorrect password");
-      } else {
-        throw error;
-      }
-    }
+export const loginWithEmailAndPassword = async (email, password, reCAPTCHAToken) => {
+  try {
+    // Verify the reCAPTCHA token before proceeding with login
+    await makeAuthRequest('/api/login', email, password, reCAPTCHAToken);
+
+    // If the token is valid, proceed with Firebase login
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
+  } catch (error) {
+    console.error("Error during login:", error.message);
+    throw new Error(`Login Error: ${error.message}`);
+  }
 };
 
 // Logout the current user
 export const logout = async () => {
-    try {
-      await signOut(auth);
-      return { success: true };
-    } catch (error) {
-      console.error("Error during logout:", error.message);
-      throw error;
-    }
+  try {
+    await signOut(auth);
+    return { success: true };
+  } catch (error) {
+    console.error("Error during logout:", error.message);
+    throw new Error(`Logout Error: ${error.message}`);
+  }
 };

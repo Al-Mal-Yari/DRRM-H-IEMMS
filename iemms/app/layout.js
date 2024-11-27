@@ -1,3 +1,5 @@
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import localFont from "next/font/local";
 import "../styles/main.sass";
 
@@ -24,6 +26,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        {/* ToastContainer to enable notifications */}
+        <ToastContainer position="top-right" autoClose={3000} />
       </body>
     </html>
   );

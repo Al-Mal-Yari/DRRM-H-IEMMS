@@ -10,7 +10,7 @@ export default function Header() {
   ];
 
   return (
-    <div className="bg-gray-100 h-14 w-full flex items-center justify-between px-8 shadow-md sticky top-0 z-10">
+    <div className="bg-gray-100 h-14 w-full flex items-center justify-between px-8 shadow-lg sticky top-0 z-10">
       {/* Left Section: History and Search */}
       <div className="flex items-center gap-4 ml-3">
         {/* Icon Tooltip: Recent Activities */}

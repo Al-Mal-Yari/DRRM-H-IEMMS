@@ -24,7 +24,10 @@ export default function Sidebar() {
                     
                     <a href="" className="flex items-center ps-2.5 mb-5 mt-3">
                         <img src="/drrmlogo.png" alt="DRRM Logo" width={70} height={70} loading="lazy" className="cursor-pointer" style={{ maxWidth: "120px", maxHeight: "120px" }}/>
-                        <span className="self-center text-md font-semibold whitespace-nowrap ml-4 dark:text-white">DRRM-IEMMS</span>
+                        <span className="self-center text-md font-semibold whitespace-nowrap ml-1 dark:text-white text-white px-3 py-1 rounded-lg hover:bg-[#7a0000] transition-colors duration-300" loading="lazy">
+                        DRRM-IEMMS
+                        </span>
+
                     </a>
                     <ul className="space-y-2 font-medium">
                         <li>

@@ -7,11 +7,11 @@ import Image from "next/image";
 export default function HomeNavBar() {
     {/*Array of navigation links*/}
     const navLinks = [
-      { title: "Overview", href: "./overview" },
-      { title: "Reports", href: "./reports" },
-      { title: "Inventory", href: "./Inventory" },
-      { title: "Announcements", href: "./announcements" },
-      { title: "About", href: "./about" },
+      { title: "Overview", href: "/upm-drrm-app/home/overview" },
+      { title: "Reports", href: "/upm-drrm-app/home/reports" },
+      { title: "Inventory", href: "/upm-drrm-app/home/Inventory" },
+      { title: "Announcements", href: "/upm-drrm-app/home/announcements" },
+      { title: "About", href: "/upm-drrm-app/home/about" },
     ];
 
     {/*render navLinks*/}
@@ -41,11 +41,11 @@ export default function HomeNavBar() {
         {/* Navigation Links */}
         <nav className="sticky mt-1.5 flex space-x-4">
           {[
-            { title: "Overview", href: "./overview" },
-            { title: "Reports", href: "./reports" },
-            { title: "Inventory", href: "./Inventory" },
-            { title: "Announcements", href: "./announcements" },
-            { title: "About", href: "./about" },
+            { title: "Overview", href: "/upm-drrm-app/home/overview" },
+            { title: "Reports", href: "/upm-drrm-app/home/reports" },
+            { title: "Inventory", href: "/upm-drrm-app/home/Inventory" },
+            { title: "Announcements", href: "/upm-drrm-app/home/announcements" },
+            { title: "About", href: "/upm-drrm-app/home/about" },
           ].map((link, index) => (
             <Link
               key={`${link.title}-${index}`} // Unique key for each link
