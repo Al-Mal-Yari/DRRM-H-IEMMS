@@ -7,6 +7,8 @@ export default async function handler(req, res) {
 
   const { token } = req.body;
 
+  console.log("Received reCAPTCHA token:", token);
+
   try {
     // Use the utility function to verify the token
     await verifyRecaptchaToken(token);

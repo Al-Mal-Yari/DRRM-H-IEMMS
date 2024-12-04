@@ -1,125 +1,104 @@
-import { loginWithEmailAndPassword, registerWithEmailAndPassword } from "../firebase/auth";
-import { appCheck } from "../firebase/firebaseConfig"; // Ensure appCheck is initialized
+import {
+  loginWithEmailAndPassword,
+  registerWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "../../firebase/auth";  
+import { appCheck } from "../../firebase/firebaseConfig";
 import { getToken } from "firebase/app-check";
 
-export const handleLogin = async (username, password, router, toast, setIsLoading) => {
-  setIsLoading(true);
+/**
+* Validates email format
+* @param {string} email - Email to validate
+* @returns {boolean} - True if valid, false otherwise
+*/
+const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
-  try {
-    // Validate email format
-    if (!username.includes("@")) {
-      toast.error("Please enter a valid email address.");
-      setIsLoading(false);
-      return;
-    }
+/**
+* Validates password length
+* @param {string} password - Password to validate
+* @returns {boolean} - True if valid, false otherwise
+*/
+const validatePassword = (password) => password.length >= 6;
 
-    // Validate password length
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long.");
-      setIsLoading(false);
-      return;
-    }
+/**
+* Handles reCAPTCHA token generation and validation
+* @returns {Promise<boolean>} - True if reCAPTCHA is successful, false otherwise
+*/
+const validateRecaptcha = async () => {
+if (!appCheck) throw new Error("App Check is not initialized");
 
-    if (!appCheck) throw new Error("App Check is not initialized");
+const appCheckTokenResult = await getToken(appCheck, true);
+const recaptchaToken = appCheckTokenResult?.token;
+console.log("Received reCAPTCHA token:", recaptchaToken);
 
-    // Get the reCAPTCHA token
-    const appCheckTokenResult = await getToken(appCheck, true);
-    const recaptchaToken = appCheckTokenResult?.token;
+const response = await fetch("/api/verify-recaptcha", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ token: recaptchaToken }),
+});
 
-    // Send token to backend for verification
-    const response = await fetch('/api/verify-recaptcha', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: recaptchaToken }),
-    });
-
-    const reCAPTCHAResult = await response.json();
-    if (!reCAPTCHAResult.success) {
-      toast.error("reCAPTCHA verification failed.");
-      setIsLoading(false);
-      return;
-    }
-
-    // Log the user in
-    const user = await loginWithEmailAndPassword(username, password, recaptchaToken);
-    toast.success("Login successful!");
-
-    // Redirect to the home page
-    router.push("/upm-drrm-app/home");
-  } catch (error) {
-    toast.error("Login failed: " + error.message);
-  } finally {
-    setIsLoading(false);
-  }
+const reCAPTCHAResult = await response.json();
+return reCAPTCHAResult.success;
 };
 
-export const handleRegister = async (
-  newUsername,
-  newPassword,
-  confirmPassword,
-  router,
-  toast,
-  setIsLoading,
-  handleCloseRegisterModal,
-  resetFormFields
-) => {
-  setIsLoading(true);
+/**
+* Handles user login
+* @param {string} username - User's email
+* @param {string} password - User's password
+* @returns {Promise<void>}
+*/
+export const login = async (username, password) => {
+if (!validateEmail(username)) throw new Error("Invalid email format.");
+if (!validatePassword(password)) throw new Error("Password must be at least 6 characters long.");
 
-  try {
-    // Validate email format
-    if (!newUsername.includes("@")) {
-      toast.error("Please enter a valid email address.");
-      setIsLoading(false);
-      return;
-    }
+const isRecaptchaValid = await validateRecaptcha();
+if (!isRecaptchaValid) throw new Error("reCAPTCHA verification failed.");
 
-    // Validate password length
-    if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters long.");
-      setIsLoading(false);
-      return;
-    }
+// Login using Firebase auth
+return await loginWithEmailAndPassword(username, password);
+};
 
-    // Check if passwords match
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!");
-      setIsLoading(false);
-      return;
-    }
+/**
+* Handles user registration
+* @param {string} email - New user's email
+* @param {string} password - New user's password
+* @param {string} confirmPassword - Confirmation of the new password
+* @returns {Promise<void>}
+*/
+export const register = async (email, password, confirmPassword) => {
+if (!validateEmail(email)) throw new Error("Invalid email format.");
+if (!validatePassword(password)) throw new Error("Password must be at least 6 characters long.");
+if (password !== confirmPassword) throw new Error("Passwords do not match!");
 
-    if (!appCheck) throw new Error("App Check is not initialized");
+const isRecaptchaValid = await validateRecaptcha();
+if (!isRecaptchaValid) throw new Error("reCAPTCHA verification failed.");
 
-    // Get the reCAPTCHA token
-    const appCheckTokenResult = await getToken(appCheck, true);
-    const recaptchaToken = appCheckTokenResult?.token;
+try {
+  // Register using Firebase auth
+  console.log("Attempting to register:", email, password);
+  return await registerWithEmailAndPassword(email, password);
+} catch (error) {
+  console.error("Registration failed:", error.message);
+  throw new Error("Failed to register: " + error.message);
+}
+};
 
-    // Send token to backend for verification
-    const response = await fetch('/api/verify-recaptcha', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: recaptchaToken }),
-    });
+/**
+* Handles password reset
+* @param {string} email - User's email for password reset
+* @returns {Promise<void>}
+*/
+export const resetPassword = async (email) => {
+if (!validateEmail(email)) throw new Error("Invalid email format.");
 
-    const reCAPTCHAResult = await response.json();
-    if (!reCAPTCHAResult.success) {
-      toast.error("reCAPTCHA verification failed.");
-      setIsLoading(false);
-      return;
-    }
+const isRecaptchaValid = await validateRecaptcha();
+if (!isRecaptchaValid) throw new Error("reCAPTCHA verification failed.");
 
-    // Register the user
-    const user = await registerWithEmailAndPassword(newUsername, newPassword, recaptchaToken);
-    toast.success("Registration successful! You can now log in.");
-
-    // Reset form and close modal
-    resetFormFields();
-    handleCloseRegisterModal();
-
-    // Redirect to login page
-    router.push("/");
-  } catch (error) {
-    toast.error("Registration failed: " + error.message);
-  } finally {
-    setIsLoading(false);
-  }
+// Send password reset email using Firebase auth
+try {
+  await sendPasswordResetEmail(email);
+  return "Password reset email sent!";
+} catch (error) {
+  throw new Error("Failed to send password reset email: " + error.message);
+}
 };

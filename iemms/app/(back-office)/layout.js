@@ -19,6 +19,7 @@ export default function Layout({ children }) {
         {/* HomeNavBar - Positioned below Header */}
         <div className="bg-white shadow-md">
           <HomeNavBar />
+          {children}
         </div>
     </div>
   </div>
